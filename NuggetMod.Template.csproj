@@ -21,7 +21,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DrAbc.MetaMod" Version="0.0.1-alpha" />
+    <PackageReference Include="DrAbc.NuggetMod" Version="0.0.4" />
   </ItemGroup>
 
   <ItemGroup>

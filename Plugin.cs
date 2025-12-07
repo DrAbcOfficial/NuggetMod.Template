@@ -1,9 +1,9 @@
-﻿using Metamod.Enum.Metamod;
-using Metamod.Interface;
-using Metamod.Interface.Events;
-using Metamod.Wrapper.Metamod;
+﻿using NuggetMod.Enum.Metamod;
+using NuggetMod.Interface;
+using NuggetMod.Interface.Events;
+using NuggetMod.Wrapper.Metamod;
 
-namespace Metamod.Template;
+namespace NuggetMod.Template;
 
 /// <summary>
 /// Plugin entry point: the name must be Plugin and must inherit from the IPlugin interface.
@@ -22,28 +22,18 @@ public class Plugin : IPlugin
         Date = "2025/11/11",
         LogTag = "C#FUCK",
         Url = "github.com",
-        Loadable = PluginLoadTime.PT_ANYTIME,
-        Unloadable = PluginLoadTime.PT_ANYTIME
+        Loadable = PluginLoadTime.Anytime,
+        Unloadable = PluginLoadTime.Anytime
     };
-
-    public MetaPluginInfo GetPluginInfo()
-    {
-        return _pluginInfo;
-    }
-
-    public void Meta_Init()
-    {
-
-    }
-
-    public bool Meta_Query(InterfaceVersion interfaceVersion, MetaUtilFunctions pMetaUtilFuncs)
+    public MetaPluginInfo GetPluginInfo() => _pluginInfo;
+    public void MetaInit(){ }
+    public bool MetaQuery(InterfaceVersion interfaceVersion, MetaUtilFunctions pMetaUtilFuncs)
     {
         if (interfaceVersion != _pluginInfo.InterfaceVersion)
             return false;
         return true;
     }
-
-    public bool Meta_Attach(PluginLoadTime now, MetaGlobals pMGlobals, MetaGameDLLFunctions pGamedllFuncs)
+    public bool MetaAttach(PluginLoadTime now, MetaGlobals pMGlobals, MetaGameDLLFunctions pGamedllFuncs)
     {
         // Add Command
         MetaMod.EngineFuncs.AddServerCommand("fuck", () =>
@@ -60,25 +50,26 @@ public class Plugin : IPlugin
                 $"{(nameof(MetaMod.PluginInfo.Loadable))}:{MetaMod.PluginInfo.Loadable}\n" +
                 $"{(nameof(MetaMod.PluginInfo.Unloadable))}:{MetaMod.PluginInfo.Unloadable}\n");
         });
-
         // Events
         DLLEvents _entityapiEvents = new();
         _entityapiEvents.GameInit += () =>
         {
             MetaMod.EngineFuncs.ServerPrint("Game Initialized!\n");
-            MetaMod.MetaGlobals.Result = MetaResult.MRES_IGNORED;
+            return MetaResult.Ignored;
         };
         // With Events, you can set more than one trigger
         _entityapiEvents.GameInit += () =>
         {
             MetaMod.EngineFuncs.ServerPrint("……And fuck the world!\n");
+            //Only last call result will be used
+            return MetaResult.Handled;
         };
         // Register
         MetaMod.RegisterEvents(entityApi: _entityapiEvents);
         return true;
     }
 
-    public bool Meta_Detach(PluginLoadTime now, PluginUnloadReason reason)
+    public bool MetaDetach(PluginLoadTime now, PluginUnloadReason reason)
     {
         return true;
     }
